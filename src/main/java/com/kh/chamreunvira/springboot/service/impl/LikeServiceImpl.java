@@ -1,4 +1,4 @@
-package com.kh.chamreunvira.springboot.service.imple;
+package com.kh.chamreunvira.springboot.service.impl;
 
 import com.kh.chamreunvira.springboot.model.Like;
 import com.kh.chamreunvira.springboot.model.Post;

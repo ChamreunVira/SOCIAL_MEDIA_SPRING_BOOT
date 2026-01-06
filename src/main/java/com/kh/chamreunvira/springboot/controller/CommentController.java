@@ -4,7 +4,6 @@ import com.kh.chamreunvira.springboot.data.ApiResponse;
 import com.kh.chamreunvira.springboot.dto.CommentRequest;
 import com.kh.chamreunvira.springboot.model.Comment;
 import com.kh.chamreunvira.springboot.service.CommentService;
-import com.kh.chamreunvira.springboot.service.imple.CommentServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.CurrentSecurityContext;

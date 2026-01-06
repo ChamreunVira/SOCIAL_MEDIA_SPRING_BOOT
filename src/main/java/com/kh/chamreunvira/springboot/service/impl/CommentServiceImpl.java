@@ -1,4 +1,4 @@
-package com.kh.chamreunvira.springboot.service.imple;
+package com.kh.chamreunvira.springboot.service.impl;
 
 import com.kh.chamreunvira.springboot.dto.CommentRequest;
 import com.kh.chamreunvira.springboot.model.Comment;

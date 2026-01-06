@@ -1,4 +1,4 @@
-package com.kh.chamreunvira.springboot.service.imple;
+package com.kh.chamreunvira.springboot.service.impl;
 
 import com.kh.chamreunvira.springboot.dto.PostRequest;
 import com.kh.chamreunvira.springboot.dto.PostResponse;
@@ -6,7 +6,6 @@ import com.kh.chamreunvira.springboot.mapper.PostMapper;
 import com.kh.chamreunvira.springboot.model.Post;
 import com.kh.chamreunvira.springboot.model.User;
 import com.kh.chamreunvira.springboot.repository.PostRepository;
-import com.kh.chamreunvira.springboot.repository.UserRepository;
 import com.kh.chamreunvira.springboot.security.AuthService;
 import com.kh.chamreunvira.springboot.service.PostService;
 import lombok.RequiredArgsConstructor;
