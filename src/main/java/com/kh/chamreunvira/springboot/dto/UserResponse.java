@@ -17,6 +17,7 @@ public class UserResponse {
 
     private Long id;
     private String token;
+    private String profile;
     private String username;
     private String email;
     private List<String> role;

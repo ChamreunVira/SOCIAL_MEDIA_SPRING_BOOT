@@ -44,8 +44,9 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers("auth/**").permitAll()
-                                .requestMatchers("auth/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/auth/**").permitAll()
+                                .requestMatchers("/uploads/**" , "/static/**" , "/images/**").permitAll()
+                                .requestMatchers("/auth/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex

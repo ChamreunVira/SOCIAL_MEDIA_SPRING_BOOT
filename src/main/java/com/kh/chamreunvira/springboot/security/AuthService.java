@@ -7,9 +7,10 @@ import com.kh.chamreunvira.springboot.model.User;
 
 public interface AuthService {
 
-    UserResponse register(UserRequest request);
+    UserResponse register(UserRequest request) throws Exception;
     UserResponse login(AuthRequest request);
     User fetchUserById(Long id);
-    User fetchUserByEmail(String email);
+    UserResponse getProfile();
+    User getCurrentUser();
 
 }

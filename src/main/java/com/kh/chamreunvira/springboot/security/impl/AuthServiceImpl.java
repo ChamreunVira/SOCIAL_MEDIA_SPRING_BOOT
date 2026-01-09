@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +28,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public UserResponse register(UserRequest request) {
+    public UserResponse register(UserRequest request) throws Exception {
         User user = authMapper.mapperToEntity(request);
         var token = jwtService.generateToken(user.getEmail());
         User saveUser = userRepository.save(user);
@@ -56,8 +58,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public User fetchUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Email not found with email: " + email));
+    public UserResponse getProfile() {
+        User user = this.getCurrentUser();
+        return authMapper.mapperToResponse(user , null);
+    }
+
+    @Override
+    public User getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return userRepository.findByEmail(auth.getName()).orElseThrow(() -> new RuntimeException("User is not authenticated."));
     }
 }

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -17,6 +18,7 @@ public class PostResponse {
     private Long id;
     private String title;
     private String content;
+    private String image;
     @JsonProperty("author")
     private AuthorResponse authorResponse;
     @JsonProperty("comments")
@@ -25,5 +27,7 @@ public class PostResponse {
     private int likeCount;
     @JsonProperty("likeByMe")
     private boolean likeByMe;
+    private LocalDate createdAt;
+    private LocalDate updatedAt;
 
 }

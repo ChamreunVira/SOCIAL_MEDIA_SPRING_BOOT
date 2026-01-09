@@ -23,8 +23,8 @@ public class PostServiceImpl implements PostService {
     private final AuthService authService;
 
     @Override
-    public Post create(PostRequest req , String email) {
-        User user = authService.fetchUserByEmail(email);
+    public Post create(PostRequest req) throws Exception {
+        User user = authService.getCurrentUser();
         Post post = postMapper.mapperToEntity(req , user.getId());
         postRepository.save(post);
         return post;
@@ -41,15 +41,15 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostResponse> getAll(String email) {
-        User user = authService.fetchUserByEmail(email);
+    public List<PostResponse> getAll() {
+        User user = authService.getCurrentUser();
         List<Post> post = postRepository.findAll();
         return postMapper.mapperToList(post , user.getId());
     }
 
     @Override
-    public PostResponse getById(Long id , String email) {
-        User user = authService.fetchUserByEmail(email);
+    public PostResponse getById(Long id) {
+        User user = authService.getCurrentUser();
         Post post = postRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found with user: " + id));
         return postMapper.mapperToResponse(post , user.getId());
     }

@@ -6,8 +6,10 @@ import com.kh.chamreunvira.springboot.model.Post;
 import com.kh.chamreunvira.springboot.model.User;
 import com.kh.chamreunvira.springboot.repository.LikeRepository;
 import com.kh.chamreunvira.springboot.security.AuthService;
+import com.kh.chamreunvira.springboot.utils.FileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -17,27 +19,21 @@ public class PostMapper {
 
     private final AuthService authService;
     private final LikeRepository likeRepository;
+    private final FileUtil fileUtil;
 
-    public Post mapperToEntity(PostRequest req , Long userId) {
+    public Post mapperToEntity(PostRequest req , Long userId) throws Exception {
         Post post = new Post();
         post.setTitle(req.getTitle());
         post.setContent(req.getContent());
-
+        MultipartFile file = req.getFile();
+        if(file != null && !file.isEmpty()) {
+            String fileName = fileUtil.saveFile(file);
+            post.setImage(fileName);
+        }
         User user = authService.fetchUserById(userId);
-
         post.setUser(user);
-//        post.setComments(mapperToEntityFromCommentRequest(req.getCommentRequests() , post , user));
         return post;
     }
-
-//    public List<Comment> mapperToEntityFromCommentRequest(List<CommentRequest> request , Post post , User user) {
-//        return request.stream().map(req -> Comment
-//                .builder()
-//                .content(req.getContent())
-//                .user(user)
-//                .post(post)
-//                .build()).toList();
-//    }
 
     public List<CommentResponse> mapperToResponseFromComment(List<Comment> comments) {
         return comments
@@ -61,6 +57,7 @@ public class PostMapper {
         response.setId(post.getId());
         response.setTitle(post.getTitle());
         response.setContent(post.getContent());
+        response.setImage(post.getImage());
         response.setAuthorResponse(authorResponse);
         List<CommentResponse> commentResponses = mapperToResponseFromComment(post.getComments());
         response.setComments(commentResponses);
@@ -68,6 +65,8 @@ public class PostMapper {
         boolean likeByMe = likeRepository.existsByPostIdAndUserId(response.getId() , userId);
         response.setLikeCount(totalLikes);
         response.setLikeByMe(likeByMe);
+        response.setCreatedAt(post.getCreatedAt());
+        response.setUpdatedAt(post.getUpdatedAt());
 
         return response;
     }
@@ -80,20 +79,19 @@ public class PostMapper {
             int totalLikes = likeRepository.countByPostId(p.getId());
             boolean likeByMe = likeRepository.existsByPostIdAndUserId(p.getId() , userId);
             return PostResponse.builder()
-                   .id(p.getId())
-                   .title(p.getTitle())
-                   .content(p.getContent())
-                   .authorResponse(authorResponse)
-                   .comments(mapperToResponseFromComment(p.getComments()))
-                   .likeCount(totalLikes)
-                   .likeByMe(likeByMe)
+                    .id(p.getId())
+                    .title(p.getTitle())
+                    .content(p.getContent())
+                    .image(p.getImage())
+                    .authorResponse(authorResponse)
+                    .comments(mapperToResponseFromComment(p.getComments()))
+                    .likeCount(totalLikes)
+                    .likeByMe(likeByMe)
+                    .createdAt(p.getCreatedAt())
+                    .updatedAt(p.getUpdatedAt())
                    .build();
         }).toList();
     }
-
-//    public List<PostResponse> mapperToList(List<Post> posts) {
-//        return posts.stream().map(this::mapperToResponse).toList();
-//    }
 
 
 }

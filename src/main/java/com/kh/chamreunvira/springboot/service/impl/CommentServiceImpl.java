@@ -19,12 +19,12 @@ public class CommentServiceImpl implements CommentService {
     private final PostService postService;
     private final AuthService authService;
 
-    public Comment create(Long postId ,String email , CommentRequest request) {
+    public Comment create(Long postId , CommentRequest request) {
         Comment comment = new Comment();
         comment.setContent(request.getContent());
         Post post = postService.fetchPostById(postId);
         comment.setPost(post);
-        User user = authService.fetchUserByEmail(email);
+        User user = authService.getCurrentUser();
         comment.setUser(user);
         Comment saveComment = commentRepository.save(comment);
         return saveComment;

@@ -15,8 +15,8 @@ public class LikeController {
     public final LikeService likeService;
 
     @PostMapping("/posts/{postId}/like")
-    public ResponseEntity<Void> handleLike(@PathVariable Long postId , @CurrentSecurityContext(expression = "authentication?.name") String email) {
-        likeService.toggleLike(postId , email);
+    public ResponseEntity<Void> handleLike(@PathVariable Long postId) {
+        likeService.toggleLike(postId);
         return ResponseEntity.ok().build();
     }
 

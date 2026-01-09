@@ -1,6 +1,5 @@
 package com.kh.chamreunvira.springboot.jwt.impl;
 
-import com.kh.chamreunvira.springboot.data.ApiResponse;
 import com.kh.chamreunvira.springboot.exception.CustomMessageException;
 import com.kh.chamreunvira.springboot.jwt.JwtConfig;
 import com.kh.chamreunvira.springboot.jwt.JwtService;
@@ -8,13 +7,11 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.parameters.P;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.jwt.JwtValidationException;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -88,13 +85,13 @@ public class JwtServiceImpl extends JwtConfig implements JwtService {
 
         } catch (ExpiredJwtException ex) {
             log.info(ex.getLocalizedMessage());
-            throw new CustomMessageException("Token is expired." , false);
+            throw new CustomMessageException("Token is expired." , HttpStatus.BAD_REQUEST.value());
         } catch (UnsupportedJwtException ex) {
             log.info(ex.getLocalizedMessage());
-            throw new CustomMessageException("Token is not support" , false);
+            throw new CustomMessageException("Token is not support" , HttpStatus.BAD_REQUEST.value());
         } catch (JwtException ex) {
             log.info(ex.getLocalizedMessage());
-            throw new CustomMessageException("Token is invalid format" , false);
+            throw new CustomMessageException("Token is invalid format" , HttpStatus.BAD_REQUEST.value());
         } catch (Exception ex) {
             log.info("Something went wrong.");
             throw new RuntimeException("Something went wrong.");

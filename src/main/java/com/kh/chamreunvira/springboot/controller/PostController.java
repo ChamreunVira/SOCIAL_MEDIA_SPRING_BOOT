@@ -10,6 +10,7 @@ import com.kh.chamreunvira.springboot.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.*;
@@ -26,19 +27,19 @@ public class PostController {
 
     private final PostService postService;
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<Post>> createPost(@CurrentSecurityContext(expression = "authentication?.name") String email , @RequestBody PostRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("Create post successfully." , postService.create(request , email)));
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE , produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApiResponse<Post>> createPost(@ModelAttribute PostRequest request) throws Exception {
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("Create post successfully." , postService.create(request)));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<PostResponse>> getOnePost(@PathVariable Long id , @CurrentSecurityContext(expression = "authentication?.name") String email) {
-        return ResponseEntity.ok().body(ApiResponse.success("Post is found." , postService.getById(id , email)));
+    public ResponseEntity<ApiResponse<PostResponse>> getOnePost(@PathVariable Long id) {
+        return ResponseEntity.ok().body(ApiResponse.success("Post is found." , postService.getById(id)));
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<PostResponse>>> getAllPost(@CurrentSecurityContext(expression = "authentication?.name") String email) {
-        return ResponseEntity.ok().body(ApiResponse.success("All post list." , postService.getAll(email)));
+    public ResponseEntity<ApiResponse<List<PostResponse>>> getAllPost() {
+        return ResponseEntity.ok().body(ApiResponse.success("All post list." , postService.getAll()));
     }
 
     @PutMapping("/{id}")

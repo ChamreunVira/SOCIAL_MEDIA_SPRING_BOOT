@@ -21,9 +21,9 @@ public class LikeServiceImpl implements LikeService {
     private final LikeRepository likeRepository;
 
     @Override
-    public void toggleLike(Long postId, String email) {
+    public void toggleLike(Long postId) {
         Like like = new Like();
-        User existsUser = authService.fetchUserByEmail(email);
+        User existsUser = authService.getCurrentUser();
         Long userId = existsUser.getId();
         Optional<Like> existsLike = likeRepository.findByPostIdAndUserId(postId , userId);
         if(existsLike.isPresent()) {

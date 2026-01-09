@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "tlb_user")
+@Table(name = "tbl_user")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,6 +23,8 @@ public class User extends BaseEntity<Long , LocalDate> implements UserDetails {
 
     @Column(name = "username" , nullable = false , length = 50)
     private String username;
+    @Column(name = "image" , nullable = false)
+    private String profile;
     @Column(name = "email" , nullable = false , unique = true , length = 100)
     private String email;
     @Column(name = "password" , nullable = false , length = 255)
@@ -37,6 +39,12 @@ public class User extends BaseEntity<Long , LocalDate> implements UserDetails {
     @OneToMany(mappedBy = "user" , fetch = FetchType.LAZY , cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Like> likes;
+
+    @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    private List<FriendRequest> sendRequest;
+
+    @OneToMany(mappedBy = "receiver" , fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    private List<FriendRequest> receiveRequest;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

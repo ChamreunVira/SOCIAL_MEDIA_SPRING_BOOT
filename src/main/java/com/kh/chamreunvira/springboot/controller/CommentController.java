@@ -16,9 +16,8 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/posts/{postId}/comments")
-    public ResponseEntity<ApiResponse<Comment>> createComment(@PathVariable Long postId ,@CurrentSecurityContext(expression = "authentication?.name") String email
-            , @RequestBody CommentRequest request) {
-        return ResponseEntity.ok().body(ApiResponse.success("Comment has been send Successfully." , commentService.create(postId ,email , request)));
+    public ResponseEntity<ApiResponse<Comment>> createComment(@PathVariable Long postId , @RequestBody CommentRequest request) {
+        return ResponseEntity.ok().body(ApiResponse.success("Comment has been send Successfully." , commentService.create(postId , request)));
     }
 
     @DeleteMapping("/posts/comments/{commentId}")

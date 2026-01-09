@@ -6,17 +6,19 @@ import com.kh.chamreunvira.springboot.dto.UserRequest;
 import com.kh.chamreunvira.springboot.dto.UserResponse;
 import com.kh.chamreunvira.springboot.security.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.AuthenticationException;
 import java.time.Duration;
 import java.util.Map;
+import java.util.Objects;
 
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -24,8 +26,8 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/register")
-    public ResponseEntity<ApiResponse<UserResponse>> register(@RequestBody UserRequest request) {
+    @PostMapping(value = "/register" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<UserResponse>> register(@ModelAttribute UserRequest request) throws Exception {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("User register successfully." , authService.register(request)));
     }
 
@@ -40,12 +42,39 @@ public class AuthController {
                 .maxAge(Duration.ofSeconds(60 * 10))
                 .path("/")
                 .build();
-        return ResponseEntity.ok().header("Set-Cookie" , cookie.toString()).body(ApiResponse.success("User login successfully." , response));
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE , cookie.toString()).body(ApiResponse.success("User login successfully." , response));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<?>> logout() {
+        try{
+            ResponseCookie cookie = ResponseCookie
+                    .from("token" , "")
+                    .httpOnly(true)
+                    .sameSite("Strict")
+                    .maxAge(0)
+                    .secure(false)
+                    .build();
+            return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE , cookie.toString()).body(ApiResponse.success("Logout successfully."));
+        }catch (Exception ex) {
+            log.info("Logout is fail.");
+            throw new RuntimeException("Logout is fail.");
+        }
     }
 
     @GetMapping("/profile")
-    public Map<String , Object> getProfile(@CurrentSecurityContext(expression = "authentication") Object object) {
-        return Map.of("name" , object);
+    public ResponseEntity<ApiResponse<UserResponse>> getProfile() {
+        return ResponseEntity.ok().body(ApiResponse.success("User profile." , authService.getProfile()));
     }
+
+    @GetMapping("/is-authenticated")
+    public ResponseEntity<?> isAuthenticated(@CurrentSecurityContext(expression = "authentication.name") String email) {
+        try {
+            return ResponseEntity.ok().body(!Objects.equals(email, "anonymousUser"));
+        }catch (Exception ex) {
+            throw new RuntimeException("User isn't authenticated.");
+        }
+    }
+
 
 }
